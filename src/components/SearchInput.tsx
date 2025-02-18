@@ -7,7 +7,7 @@ interface Props {
   onClose?: () => void;
 }
 
-export const SearchInput: React.FC<Props> = ({ onClose }) => {
+export const SearchInput: React.FC<Props> = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { query, setQuery, selectedIndex, setSelectedIndex, toggleFavorite } = useSearchStore();
   const [isOpen, setIsOpen] = React.useState(false);

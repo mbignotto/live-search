@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useMemo } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
 import { useSearchStore } from '../store/searchStore';
 import { searchMovies, getMovieDetails } from '../lib/tmdb';
 import { MovieCard } from './MovieCard';
@@ -10,6 +10,11 @@ import { highlightText, getMatchScore, cn } from '../lib/utils';
 interface Props {
   onClose?: () => void;
   onMovieSelect?: (movie: Movie | null) => void;
+}
+
+interface SearchResults {
+  results: Movie[];
+  total_pages: number;
 }
 
 export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
@@ -23,14 +28,15 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
     fetchNextPage,
     hasNextPage,
     isFetching,
-  } = useInfiniteQuery({
+  } = useInfiniteQuery<SearchResults, Error, InfiniteData<SearchResults>, ['movies', string], number>({
     queryKey: ['movies', query],
-    queryFn: async ({ pageParam = 1 }) => {
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) => {
       if (!query) return { results: [], total_pages: 0 };
       
       const searchResults = await searchMovies(query, pageParam);
       const moviesWithDetails = await Promise.all(
-        searchResults.results.map((movie: any) => getMovieDetails(movie.id))
+        searchResults.results.map((movie: Movie) => getMovieDetails(movie.id))
       );
       
       return {
@@ -49,7 +55,7 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
 
   // Ordenar filmes pelo score de match e separar o primeiro filme
   const { sortedMovies, firstMovie, otherMovies } = useMemo(() => {
-    const allMovies = data?.pages.flatMap((page) => page.results) ?? [];
+    const allMovies = data?.pages.flatMap((page: SearchResults) => page.results) ?? [];
     
     // Ordenar filmes pelo score de match
     const sorted = [...allMovies].sort((a, b) => {
