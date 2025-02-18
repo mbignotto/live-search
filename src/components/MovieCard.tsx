@@ -16,7 +16,6 @@ interface Props {
 export const MovieCard: React.FC<Props> = ({ 
   movie, 
   isSelected,
-  isHighlighted,
   isCompact,
   onSelect,
   highlightedTitle

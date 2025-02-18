@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Movie, SearchState } from '../types/movie';
+import { SearchState } from '../types/movie';
 
 export const useSearchStore = create<SearchState>()(
   persist(

@@ -151,21 +151,23 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
   }
 
   return (
-    <div ref={containerRef} className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-[400px] overflow-y-auto">
+    <div ref={containerRef} className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-[400px] overflow-y-auto custom-scrollbar">
       {firstMovie && (
         <div 
           ref={el => itemRefs.current[0] = el}
-          className={cn("p-4 hover:bg-gray-50 transition-colors", {
-            'bg-blue-50': selectedIndex === 0
+          className={cn("transition-colors cursor-pointer", {
+            'bg-blue-50': selectedIndex === 0,
+            'hover:bg-gray-50': selectedIndex !== 0
           })}
         >
-          <MovieCard
-            movie={firstMovie}
-            isSelected={selectedIndex === 0}
-            isHighlighted
-            onSelect={onClose}
-            highlightedTitle={highlightText(firstMovie.title, query)}
-          />
+          <div className="p-4">
+            <MovieCard
+              movie={firstMovie}
+              isSelected={selectedIndex === 0}
+              onSelect={onClose}
+              highlightedTitle={highlightText(firstMovie.title, query)}
+            />
+          </div>
         </div>
       )}
       <div className="py-2">
@@ -175,15 +177,20 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
             <div 
               key={movie.id}
               ref={el => itemRefs.current[actualIndex] = el}
-              className="px-4 py-2 hover:bg-gray-50 transition-colors"
+              className={cn("transition-colors cursor-pointer", {
+                'bg-blue-50': actualIndex === selectedIndex,
+                'hover:bg-gray-50': actualIndex !== selectedIndex
+              })}
             >
-              <MovieCard
-                movie={movie}
-                isSelected={actualIndex === selectedIndex}
-                isCompact
-                onSelect={onClose}
-                highlightedTitle={highlightText(movie.title, query)}
-              />
+              <div className="px-4 py-2">
+                <MovieCard
+                  movie={movie}
+                  isSelected={actualIndex === selectedIndex}
+                  isCompact
+                  onSelect={onClose}
+                  highlightedTitle={highlightText(movie.title, query)}
+                />
+              </div>
             </div>
           );
         })}
