@@ -5,7 +5,7 @@ import { searchMovies, getMovieDetails } from '../lib/tmdb';
 import { MovieCard } from './MovieCard';
 import { useInView } from 'react-intersection-observer';
 import { Movie } from '../types/movie';
-import { highlightText, getMatchScore, cn } from '../lib/utils';
+import { highlightText, cn } from '../lib/utils';
 
 interface Props {
   onClose?: () => void;
@@ -53,24 +53,14 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
     enabled: query.length > 0,
   });
 
-  // Ordenar filmes pelo score de match e separar o primeiro filme
-  const { sortedMovies, firstMovie, otherMovies } = useMemo(() => {
+  // Separar o primeiro filme e os demais
+  const { firstMovie, otherMovies } = useMemo(() => {
     const allMovies = data?.pages.flatMap((page: SearchResults) => page.results) ?? [];
-    
-    // Ordenar filmes pelo score de match
-    const sorted = [...allMovies].sort((a, b) => {
-      const scoreA = getMatchScore(a.title, query);
-      const scoreB = getMatchScore(b.title, query);
-      return scoreB - scoreA;
-    });
+    const first = allMovies.length > 0 ? allMovies[0] : null;
+    const others = allMovies.length > 0 ? allMovies.slice(1) : [];
 
-    // Separar o primeiro filme apenas se tiver um match perfeito
-    const perfectMatch = sorted.length > 0 && getMatchScore(sorted[0].title, query) >= 0.8;
-    const first = perfectMatch ? sorted[0] : null;
-    const others = perfectMatch ? sorted.slice(1) : sorted;
-
-    return { sortedMovies: sorted, firstMovie: first, otherMovies: others };
-  }, [data, query]);
+    return { firstMovie: first, otherMovies: others };
+  }, [data]);
 
   // Efeito para scroll automático quando o item selecionado muda
   useEffect(() => {
@@ -104,15 +94,15 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
 
   // Efeito para atualizar o filme selecionado
   useEffect(() => {
-    if (!sortedMovies) {
+    if (!firstMovie && !otherMovies.length) {
       onMovieSelect?.(null);
       return;
     }
 
     // Encontrar o filme selecionado na lista ordenada
-    const selectedMovie = selectedIndex >= 0 ? sortedMovies[selectedIndex] : null;
+    const selectedMovie = selectedIndex >= 0 ? (firstMovie ? (selectedIndex === 0 ? firstMovie : otherMovies[selectedIndex - 1]) : otherMovies[selectedIndex]) : null;
     onMovieSelect?.(selectedMovie);
-  }, [selectedIndex, sortedMovies, onMovieSelect]);
+  }, [selectedIndex, firstMovie, otherMovies, onMovieSelect]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetching) {
@@ -122,7 +112,7 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
 
   if (!query) return null;
 
-  if (sortedMovies.length === 0 && !isFetching) {
+  if (!firstMovie && !otherMovies.length && !isFetching) {
     return (
       <div className="p-4 text-center">
         <p className="text-gray-600 mb-4">Nenhum resultado encontrado para "{query}"</p>

@@ -22,25 +22,3 @@ export function highlightText(text: string, query: string) {
     return part;
   }).join('');
 }
-
-export function getMatchScore(text: string, query: string): number {
-  if (!query || !text) return 0;
-  
-  const normalizedText = text.toLowerCase();
-  const normalizedQuery = query.toLowerCase();
-  
-  // Match exato
-  if (normalizedText === normalizedQuery) return 1;
-  
-  // Começa com a query
-  if (normalizedText.startsWith(normalizedQuery)) return 0.8;
-  
-  // Contém a query como uma palavra completa
-  if (new RegExp(`\\b${query}\\b`, 'i').test(text)) return 0.6;
-  
-  // Contém a query em qualquer lugar
-  if (normalizedText.includes(normalizedQuery)) return 0.4;
-  
-  // Não contém a query
-  return 0;
-}
