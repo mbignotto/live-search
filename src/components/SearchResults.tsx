@@ -150,7 +150,7 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
             'hover:bg-gray-50': selectedIndex !== 0
           })}
         >
-          <div className="p-4">
+          <div className="p-2">
             <MovieCard
               movie={firstMovie}
               isSelected={selectedIndex === 0}

@@ -24,6 +24,7 @@ export const useSearchStore = create<SearchState>()(
     }),
     {
       name: 'movie-search-storage',
+      partialize: (state) => ({ favorites: state.favorites }), 
     }
   )
 );

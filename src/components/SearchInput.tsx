@@ -116,7 +116,14 @@ export const SearchInput: React.FC<Props> = () => {
             </div>
           )}
         </div>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <div className={`transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+            <ChevronDown className="h-5 w-5" />
+          </div>
+        </button>
       </div>
       <p className="text-sm text-gray-500 mt-2 mb-1">
         Utilize as teclas ↑ ↓ para navegar entre as opções{suggestion && ' • → para completar'}

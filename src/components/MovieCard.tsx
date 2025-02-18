@@ -1,25 +1,24 @@
 import React from 'react';
-import { Star } from 'lucide-react';
-import { Movie } from '../types/movie';
-import { useSearchStore } from '../store/searchStore';
+import { Star } from 'lucide-react'
 import { cn } from '../lib/utils';
+import { useSearchStore } from '../store/searchStore';
+import { Movie } from '../types/movie';
 
 interface Props {
   movie: Movie;
-  isSelected?: boolean;
-  isHighlighted?: boolean;
   isCompact?: boolean;
-  onSelect?: () => void;
+  isSelected?: boolean;
   highlightedTitle?: string;
+  onSelect?: () => void;
 }
 
-export const MovieCard: React.FC<Props> = ({ 
-  movie, 
-  isSelected,
+export function MovieCard({
+  movie,
   isCompact,
-  onSelect,
-  highlightedTitle
-}) => {
+  isSelected,
+  highlightedTitle,
+  onSelect
+}: Props) {
   const { toggleFavorite, isFavorite } = useSearchStore();
   const favorited = isFavorite(movie.id);
   const year = new Date(movie.release_date).getFullYear();
@@ -28,37 +27,24 @@ export const MovieCard: React.FC<Props> = ({
     return (
       <div 
         className={cn(
-          "flex items-center justify-between py-2 rounded transition-colors",
-          isSelected && "bg-blue-50"
+          "flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer",
+          isSelected && "bg-blue-50 hover:bg-blue-50"
         )}
+        onClick={onSelect}
       >
-        <a
-          href={`https://www.imdb.com/title/${movie.imdb_id}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 hover:underline"
-          onClick={onSelect}
-        >
-          <span 
-            className="font-medium"
-            dangerouslySetInnerHTML={{ __html: highlightedTitle || movie.title }}
-          />
-          <span className="text-gray-500 ml-2">({year})</span>
-        </a>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite(movie);
-          }}
-          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-        >
-          <Star
-            className={cn(
-              "h-5 w-5",
-              favorited ? "fill-yellow-400 text-yellow-400" : "text-gray-400"
-            )}
-          />
-        </button>
+        <img
+          src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+          alt={movie.title}
+          className="w-8 h-12 object-cover rounded"
+        />
+        <div className="flex-1 min-w-0">
+          <h3 className="font-medium truncate">
+            <span dangerouslySetInnerHTML={{ __html: highlightedTitle || movie.title }} />
+          </h3>
+          <p className="text-sm text-gray-500">
+            {year}
+          </p>
+        </div>
       </div>
     );
   }
@@ -66,7 +52,7 @@ export const MovieCard: React.FC<Props> = ({
   return (
     <div 
       className={cn(
-        "flex items-start gap-4 rounded-lg transition-colors p-4",
+        "flex items-start gap-4 rounded-lg transition-colors px-2",
         isSelected && "bg-blue-50"
       )}
     >
@@ -96,7 +82,7 @@ export const MovieCard: React.FC<Props> = ({
             />
           </button>
         </div>
-        <div className="flex gap-2 mt-2">
+        <div className="flex flex-wrap gap-2 mt-2">
           {movie.genres.map((genre) => (
             <span
               key={genre.id}
@@ -118,4 +104,4 @@ export const MovieCard: React.FC<Props> = ({
       </div>
     </div>
   );
-};
+}
