@@ -22,7 +22,7 @@ export const MovieCard: React.FC<Props> = ({
 }) => {
   const { toggleFavorite, isFavorite } = useSearchStore();
   const favorited = isFavorite(movie.id);
-  const year = new Date(movie.release_date).getFullYear();
+  const year = movie.release_date ? new Date(movie.release_date).getFullYear() : null;
 
   if (isCompact) {
     return (
@@ -43,7 +43,7 @@ export const MovieCard: React.FC<Props> = ({
             className="font-medium"
             dangerouslySetInnerHTML={{ __html: highlightedTitle || movie.title }}
           />
-          <span className="text-gray-500 ml-2">({year})</span>
+          {year && <span className="text-gray-500 ml-2">({year})</span>}
         </a>
         <button
           onClick={(e) => {
@@ -79,7 +79,7 @@ export const MovieCard: React.FC<Props> = ({
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">
             <span dangerouslySetInnerHTML={{ __html: highlightedTitle || movie.title }} />
-            <span className="text-gray-500 ml-2">({year})</span>
+            {year && <span className="text-gray-500 ml-2">({year})</span>}
           </h3>
           <button
             onClick={(e) => {
