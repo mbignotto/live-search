@@ -12,7 +12,7 @@ Uma interface de busca de filmes com autocompletar inteligente, navegação por 
 
 1. Clone o repositório:
 ```bash
-git clone [url-do-repositorio]
+git clone [[url-do-repositorio](https://github.com/mbignotto/live-search.git)]
 cd live-search
 ```
 
