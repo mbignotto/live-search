@@ -151,11 +151,11 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
   }
 
   return (
-    <div ref={containerRef} className="max-h-[400px] overflow-y-auto">
+    <div ref={containerRef} className="absolute z-50 w-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-[400px] overflow-y-auto">
       {firstMovie && (
         <div 
           ref={el => itemRefs.current[0] = el}
-          className={cn("p-4", {
+          className={cn("p-4 hover:bg-gray-50 transition-colors", {
             'bg-blue-50': selectedIndex === 0
           })}
         >
@@ -175,7 +175,7 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
             <div 
               key={movie.id}
               ref={el => itemRefs.current[actualIndex] = el}
-              className="px-4 hover:bg-gray-50"
+              className="px-4 py-2 hover:bg-gray-50 transition-colors"
             >
               <MovieCard
                 movie={movie}
@@ -190,7 +190,9 @@ export const SearchResults: React.FC<Props> = ({ onClose, onMovieSelect }) => {
       </div>
       <div ref={ref} className="h-4" />
       {isFetching && (
-        <div className="p-4 text-center text-gray-600">Carregando mais resultados...</div>
+        <div className="p-4 text-center text-gray-600 border-t border-gray-100">
+          Carregando mais resultados...
+        </div>
       )}
     </div>
   );

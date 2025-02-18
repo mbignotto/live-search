@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useEffect } from 'react';
 import { Search, ChevronDown } from 'lucide-react';
 import { useSearchStore } from '../store/searchStore';
 import { SearchResults } from './SearchResults';
+import { Movie } from '../types/movie';
 
 interface Props {
   onClose?: () => void;
@@ -11,7 +12,7 @@ export const SearchInput: React.FC<Props> = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { query, setQuery, selectedIndex, setSelectedIndex, toggleFavorite } = useSearchStore();
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedMovie, setSelectedMovie] = React.useState<any>(null);
+  const [selectedMovie, setSelectedMovie] = React.useState<Movie | null>(null);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -58,10 +59,12 @@ export const SearchInput: React.FC<Props> = () => {
         />
         <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
       </div>
-      <p className="text-sm text-gray-500 mt-2">
+      <p className="text-sm text-gray-500 mt-2 mb-1">
         Utilize as teclas ↑ ↓ para navegar entre as opções
       </p>
-      {isOpen && <SearchResults onClose={() => setIsOpen(false)} onMovieSelect={setSelectedMovie} />}
+      <div className="relative">
+        {isOpen && <SearchResults onClose={() => setIsOpen(false)} onMovieSelect={setSelectedMovie} />}
+      </div>
     </div>
   );
 };
